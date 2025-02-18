@@ -44,7 +44,13 @@ app.post(
 ); // Login user
 
 const server = createServer(app);
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, {
+  cors: {
+    origin: ["https://meow-chat.netlify.app"], // Allow frontend URLs
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // Allow authorization headers & cookies
+  },
+});
 
 // ✅ Authenticate WebSocket connections
 io.use((socket, next) => {
