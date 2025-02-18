@@ -49,7 +49,7 @@ const io = new Server(server, {
   },
 });
 
-// ✅ Authenticate WebSocket connections
+// Authenticate WebSocket connections
 io.use((socket, next) => {
   const token = socket.handshake.auth.token;
   if (!token || !token.startsWith("Bearer ")) {
@@ -65,14 +65,12 @@ io.use((socket, next) => {
     }
 
     if (Date.now() >= decoded.exp * 1000) {
-      console.warn(`❌ Token expired for user ${decoded.username}`);
       return next(new Error("Token expired. Please log in again."));
     }
 
     next();
   } catch (error) {
     if (error.name === "TokenExpiredError") {
-      console.warn("⚠️ Token expired, disconnecting user.");
       return next(new Error("Token expired"));
     }
     return next(new Error("Invalid or expired token"));
@@ -81,25 +79,21 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
   if (!socket.user) {
-    console.log("❌ Unauthorized connection attempt, disconnecting.");
     socket.disconnect(true);
     return;
   }
 
-  console.log(`✅ User connected: ${socket.user.username}`);
 
   socket.on("disconnect", () => {
-    console.log(`❌ User disconnected: ${socket.user.username}`);
   });
 
-  console.log(`✅ User connected: ${socket.user.username}`);
 
-  // ✅ Handle Disconnection
+  // Handle Disconnection
   socket.on("disconnect", () => {
-    console.log(`❌ User disconnected: ${socket.user.username}`);
+    
   });
 
-  // **✅** Handle Sending Messages
+  // Handle Sending Messages
   socket.on("msg:post", async (data) => {
     // receiverUsername is the person receiving the posted message
 
@@ -135,10 +129,9 @@ io.on("connection", (socket) => {
   });
 });
 
-// ✅ Global Error Handling Middleware
+// Global Error Handling Middleware
 app.use(errorHandler);
 
 const port = process.env.PORT || 3000;
 server.listen(port, () => {
-  console.log(`🚀 Server running at http://localhost:${port}`);
 });
