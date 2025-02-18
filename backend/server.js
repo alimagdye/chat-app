@@ -15,9 +15,6 @@ const app = express(); // Create Express app
 
 app.use(globalMiddleware); // Apply global middleware
 
-// ✅ Serve Static Files (index.html for login & chat.html for chat)
-app.use(express.static("./frontend"));
-
 app.post(
   "/signup",
   [
